@@ -12,6 +12,7 @@ Hoe.plugin :newgem
 # Run 'rake -T' to see list of generated tasks (from gem root directory)
 $hoe = Hoe.spec 'serialport-server' do
   self.developer 'Sho Hashimoto', 'hashimoto@shokai.org'
+  self.post_install_message = 'PostInstall.txt'
   self.rubyforge_name       = self.name # TODO this is default value
   self.extra_deps         = [['serialport','>= 1.0.4'],
                              ['eventmachine'],

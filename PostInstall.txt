@@ -1,0 +1,2 @@
+For more information on serialport-server, see http://shokai.github.com/serialport-server
+

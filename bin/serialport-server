@@ -19,16 +19,15 @@ parser = ArgsParser.parse ARGV do
   arg :socket_port, 'TCP Socket port', :default => 8785
 end
 
-serial_device, params = parser.parse(ARGV)
-
 if !parser.first or parser.has_option? :help
   puts parser.help
+  app_name = $0.split(/\//).last
   if RUBY_PLATFORM =~ /mswin|mingw|cygwin|bccwin/
-    puts "e.g. #{$0} COM1"
-    puts "     #{$0} COM1 -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+    puts "e.g. #{app_name} COM1"
+    puts "     #{app_name} COM1 -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
   else
-    puts "e.g. #{$0} /dev/tty.your-device"
-    puts "     #{$0} /dev/tty.your-device -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+    puts "e.g. #{app_name} /dev/tty.your-device"
+    puts "     #{app_name} /dev/tty.your-device -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
   end
   exit 1
 end

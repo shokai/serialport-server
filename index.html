@@ -42,6 +42,13 @@
 </ul>
 =&gt; start HTTP, WebSocket, TCP Socket servers.
 
+<h3>DEMO:</h3>
+<ol>
+<li>Install <a href="sample/arduino/arduino.ino">Arduino Program</a></li>
+<li><a href="sample/ajax/index.html">Ajax Demo</a></li>
+<li><a href="sample/websocket/index.html">WebSocket Demo</a></li>
+</ol>
+
 <h3>HTTP Interface:</h3>
 
 read serialport
@@ -53,14 +60,21 @@ write
 <li>% curl -d 'hello!!' http://localhost:8783</li>
 </ul>
 
+<h3>WebSocket Interface:</h3>
+<pre><code>
+// JavaScript
+var ws = new WebSocket("ws://localhost:8784");
+ws.onmessage = function(e){
+  alert(e.data);
+};
+ws.send('hello!!');
+</code></pre>
+
 <h3>TCP Socket Interface:</h3>
 <ul>
-<li>% telnet localhost 8784</li>
+<li>% telnet localhost 8785</li>
 </ul>
 
-<h3>WebSocket Interface:</h3>
-<ul>
-<li>var ws = new WebSocket("ws://localhost:8785");</li>
-</ul>
+
   </body>
 </html>

@@ -1,0 +1,138 @@
+#!/usr/bin/env ruby
+require 'rubygems'
+gem 'serialport','>=1.0.4'
+require 'serialport'
+require 'eventmachine'
+require 'evma_httpserver'
+require 'em-websocket'
+require 'args_parser'
+require 'json'
+
+parser = ArgsParser.parse ARGV do
+  arg :help, 'show help', :alias => :h
+  arg :bps, 'bit per second', :default => 9600
+  arg :bit, 'bit(7-9)', :default => 8
+  arg :stopbit, 'stopbit', :default => 1
+  arg :parity, 'parity bit', :default => 0
+  arg :http_port, 'HTTP port', :default => 8783
+  arg :websocket_port, 'WebSocket port', :default => 8784
+  arg :socket_port, 'TCP Socket port', :default => 8785
+end
+
+serial_device, params = parser.parse(ARGV)
+
+if !parser.first or parser.has_option? :help
+  puts parser.help
+  if RUBY_PLATFORM =~ /mswin|mingw|cygwin|bccwin/
+    puts "e.g. #{$0} COM1"
+    puts "     #{$0} COM1 -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+  else
+    puts "e.g. #{$0} /dev/tty.your-device"
+    puts "     #{$0} /dev/tty.your-device -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+  end
+  exit 1
+end
+
+begin
+  @@sp = SerialPort.new(parser.first, parser[:bps].to_i, parser[:bit].to_i, parser[:stopbit].to_i, parser[:parity].to_i) # 9600bps, 8bit, stopbit 1, parity none
+rescue => e
+  STDERR.puts 'cannot open serialport!!'
+  STDERR.puts e.to_s
+  exit 1
+end
+
+@@recvs = Array.new
+@@channel = EM::Channel.new
+@@channel.subscribe do |data|
+  now = Time.now.to_i*1000+(Time.now.usec/1000.0).round
+  @@recvs.unshift({:time => now, :data => data})
+  while @@recvs.size > 100 do
+    @@recvs.pop
+  end
+end
+
+class SerialHttpServer  < EM::Connection
+  include EM::HttpServer
+  
+  def process_http_request
+    res = EM::DelegatedHttpResponse.new(self)
+    puts "[http] #{@http_request_method} #{@http_path_info} #{@http_query_string} #{@http_post_content}"
+    if @http_request_method == 'GET'
+      res.status = 200
+      res.content = @@recvs.to_json
+      res.send_response
+    elsif @http_request_method == 'POST'
+      res.status = 200
+      @@sp.puts @http_post_content
+      res.content = @@recvs.to_json
+      res.send_response
+    end
+  end
+end
+
+class SerialSocketServer < EM::Connection
+  def post_init
+    @sid = @@channel.subscribe do |data|
+      send_data "#{data}\n"
+    end
+    puts "* new socket client <#{@sid}>"
+
+    def receive_data data
+      data = data.to_s.strip
+      return if data.size < 1
+      puts "* socket client <#{@sid}> : #{data}"
+      @@sp.puts data
+    end
+
+    def unbind
+      @@channel.unsubscribe @sid
+      puts "* socket client <#{@sid}> closed"
+    end
+  end
+end
+
+EM::run do
+  EM::start_server("0.0.0.0", parser[:http_port].to_i, SerialHttpServer)
+  puts "start HTTP server - port #{parser[:http_port].to_i}"
+
+  EM::start_server('0.0.0.0', parser[:socket_port].to_i, SerialSocketServer)
+  puts "start TCP Socket server - port #{parser[:socket_port].to_i}"
+
+  EM::WebSocket.start(:host => '0.0.0.0', :port => parser[:websocket_port].to_i) do |ws|
+    ws.onopen do
+      sid = @@channel.subscribe do |mes|
+        ws.send mes.to_s
+      end
+      puts "* new websocket client <#{sid}> connected"
+      ws.onmessage do |mes|
+        puts "* websocket client <#{sid}> : #{mes}"
+        @@sp.puts mes.strip
+      end
+
+      ws.onclose do
+        @@channel.unsubscribe sid
+        puts "* websocket client <#{sid}> closed"
+      end
+    end
+  end
+  puts "start WebSocket server - port #{parser[:websocket_port].to_i}"
+
+  EM::defer do
+    loop do
+      data = @@sp.gets.gsub(/[\r\n]/,'')
+      data = data.to_i if data =~ /^\d+$/
+      next if !data or data.to_s.size < 1
+      @@channel.push data
+      puts data
+    end
+  end
+
+  EM::defer do
+    loop do
+      line = STDIN.gets.gsub(/[\r\n]/,'')
+      next if !line or line.to_s.size < 1
+      @@sp.puts line
+    end
+  end
+
+end

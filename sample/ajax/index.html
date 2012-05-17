@@ -1,0 +1,57 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+  <head>
+    <meta charset="UTF-8" content="text/html" http-equiv="Content-Type" />
+    <title>serialport-server sample</title>
+    <script src="jquery.js" type="text/javascript"></script>
+    <script src="main.js" type="text/javascript"></script>
+    <style type="text/css">
+      div {
+        margin : 15px;
+      }
+      div#cds {
+        width : 200px;
+        height : 200px;
+        background-color : #000;
+      }
+      input {
+        font-size : 100%;
+      }
+      .btn {
+        padding : 5px;
+        background-color : #DDD;
+        border : 2px solid #BBB;
+        border-radius : 8px;
+        margin : 5px;
+      }
+      input.slider{
+        width : 300px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>serialport-server sample</h1>
+    <div id="main">
+      <h2>Serial Port</h2>
+      <div>
+        <input type="text" value="http://localhost:8783" id="addr" size="40" />
+      </div>
+      <h2>LED</h2>
+      <div class="led">
+        <span class="btn on">
+          ON
+        </span>
+        <span class="btn off">
+          OFF
+        </span>
+      </div>
+      <h2>CdS</h2>
+      <div class="cds">
+        <input type="range" value="500" min="0" max="1024" class="slider" />
+        <input type="text" value="500" disabled="disabled" size="5" />
+      </div>
+    </div>
+    <hr />
+    github : <a href="https://github.com/shokai/serialport-server">https://github.com/shokai/serialport-server</a>
+  </body>
+</html>

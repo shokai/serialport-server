@@ -27,7 +27,7 @@ if !parser.first or parser.has_option? :help
     puts "     #{app_name} COM1 -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
   else
     puts "e.g. #{app_name} /dev/tty.your-device"
-    puts "     #{app_name} /dev/tty.your-device -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+    puts "     #{app_name} /dev/tty.your-device -http_port 8783 -websocket_port 8784 -socket_port 8785"
   end
   exit 1
 end

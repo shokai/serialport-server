@@ -2,7 +2,6 @@ History.txt
 Manifest.txt
 README.rdoc
 Rakefile
-PostInstall.txt
 script/console
 script/destroy
 script/generate

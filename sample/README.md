@@ -10,4 +10,4 @@ Run
 ---
 - 1. Install Arduino Sample program.
 - 2. run serialport-server
-- 3. open ajax/index.html
+- 3. open ajax/index.html or websocket/index.html

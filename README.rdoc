@@ -1,6 +1,6 @@
 = serialport-server
 
-* http://github.com/shokai/serialport-server
+* http://shokai.github.com/serialport-server
 
 == DESCRIPTION:
 

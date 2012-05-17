@@ -4,7 +4,7 @@
 
 == DESCRIPTION:
 
-access SerialPort via HTTP, WebSocket and TCP Socket
+access SerialPort via HTTP, WebSocket and TCP Socket.
 
 
 == SYNOPSIS:

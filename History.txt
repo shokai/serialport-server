@@ -1,3 +1,7 @@
+=== 0.0.2 2012-05-18
+
+* fix README
+
 === 0.0.1 2012-05-17
 
 * HTTP, WebSocket and TCP Socket server

@@ -11,7 +11,7 @@ $(function(){
                 alert('websocket open');
             };
             ws.onclose = function(){
-                alert('websocket closed')
+                alert('websocket closed');
                 $('.websocket .btn').val('open');
                 $('#addr').attr('disabled',null);
             };

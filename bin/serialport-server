@@ -14,9 +14,9 @@ parser = ArgsParser.parse ARGV do
   arg :bit, 'bit(7-9)', :default => 8
   arg :stopbit, 'stopbit', :default => 1
   arg :parity, 'parity bit', :default => 0
-  arg :http_port, 'HTTP port', :default => 8783
-  arg :websocket_port, 'WebSocket port', :default => 8784
-  arg :socket_port, 'TCP Socket port', :default => 8785
+  arg :http_port, 'HTTP port', :alias => :hp, :default => 8783
+  arg :websocket_port, 'WebSocket port', :alias => :wp, :default => 8784
+  arg :socket_port, 'TCP Socket port', :alias => :sp, :default => 8785
 end
 
 if !parser.first or parser.has_option? :help
@@ -24,10 +24,10 @@ if !parser.first or parser.has_option? :help
   app_name = $0.split(/\//).last
   if RUBY_PLATFORM =~ /mswin|mingw|cygwin|bccwin/
     puts "e.g. #{app_name} COM1"
-    puts "     #{app_name} COM1 -bps 9600 -bit 8 -stopbit 1 -parity 0 -http_port 8783 -websocket_port 8784 -socket_port 8785"
+    puts "     #{app_name} COM1 -hp 8783 -wp 8784 -sp 8785"
   else
     puts "e.g. #{app_name} /dev/tty.your-device"
-    puts "     #{app_name} /dev/tty.your-device -http_port 8783 -websocket_port 8784 -socket_port 8785"
+    puts "     #{app_name} /dev/tty.your-device -hp 8783 -wp 8784 -sp 8785"
   end
   exit 1
 end

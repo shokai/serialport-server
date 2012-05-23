@@ -1,3 +1,7 @@
+=== 0.0.3 2012-05-23
+
+* Args alias. websocket_port => wp, http_port => hp, socket_port => sp
+
 === 0.0.2 2012-05-18
 
 * fix README

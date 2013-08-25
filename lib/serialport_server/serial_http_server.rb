@@ -1,5 +1,5 @@
 module SerialportServer
-  class SerialHttpServer  < EM::Connection
+  class SerialHttpServer < EM::Connection
     include EM::HttpServer
 
     def process_http_request

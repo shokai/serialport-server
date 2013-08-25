@@ -6,14 +6,14 @@ require 'args_parser'
 include SerialportServer
 
 parser = ArgsParser.parse ARGV do
-  arg :help, 'show help', :alias => :h
-  arg :bps, 'bit per second', :default => 9600
-  arg :bit, 'bit(7-9)', :default => 8
-  arg :stopbit, 'stopbit', :default => 1
-  arg :parity, 'parity bit', :default => 0
-  arg :http_port, 'HTTP port', :alias => :hp, :default => 8783
-  arg :websocket_port, 'WebSocket port', :alias => :wp, :default => 8784
-  arg :socket_port, 'TCP Socket port', :alias => :sp, :default => 8785
+  arg :help           , 'show help'       , :alias => :h
+  arg :bps            , 'bit per second'  ,                    :default => 9600
+  arg :bit            , 'bit(7-9)'        ,                    :default => 8
+  arg :stopbit        , 'stopbit'         ,                    :default => 1
+  arg :parity         , 'parity bit'      ,                    :default => 0
+  arg :http_port      , 'HTTP port'       , :alias => :hp    , :default => 8783
+  arg :websocket_port , 'WebSocket port'  , :alias => :wp    , :default => 8784
+  arg :socket_port    , 'TCP Socket port' , :alias => :sp    , :default => 8785
 end
 
 if !parser.first or parser.has_option? :help

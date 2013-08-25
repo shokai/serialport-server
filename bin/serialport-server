@@ -30,7 +30,12 @@ if !parser.first or parser.has_option? :help
 end
 
 begin
-  @@sp = SerialPort.new(parser.first, parser[:bps].to_i, parser[:bit].to_i, parser[:stopbit].to_i, parser[:parity].to_i) # 9600bps, 8bit, stopbit 1, parity none
+  # Defaults to 9600bps, 8bit, stopbit 1, parity none
+  @@sp = SerialPort.new(parser.first,
+                        parser[:bps].to_i,
+                        parser[:bit].to_i,
+                        parser[:stopbit].to_i,
+                        parser[:parity].to_i)
 rescue => e
   STDERR.puts 'cannot open serialport!!'
   STDERR.puts e.to_s

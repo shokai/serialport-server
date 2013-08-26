@@ -22,7 +22,6 @@ module SerialportServer
     def initialize(argv)
       SerialportServer.application = self
       @args = ArgsParser.parse argv do
-        arg :help, 'show help', :alias => :h
         arg :bps, 'bit per second', :default => 9600
         arg :bit, 'bit(7-9)', :default => 8
         arg :stopbit, 'stopbit', :default => 1
@@ -30,6 +29,14 @@ module SerialportServer
         arg :http_port, 'HTTP port', :alias => :hp, :default => 8783
         arg :websocket_port, 'WebSocket port', :alias => :wp, :default => 8784
         arg :socket_port, 'TCP Socket port', :alias => :sp, :default => 8785
+        arg :version, 'show version', :alias => :v
+        arg :help, 'show help', :alias => :h
+
+        on :version do
+          STDERR.puts "SerialportServer v#{SerialportServer::VERSION}"
+          STDERR.puts "http://shokai.github.io/serialport-server"
+          exit
+        end
       end
 
       if !@args.first or @args.has_option? :help

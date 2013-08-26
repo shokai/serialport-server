@@ -1,22 +1,19 @@
 #!/usr/bin/env ruby
-require 'rubygems'
-gem 'serialport','>=1.0.4'
+require_relative '../lib/serialport_server'
 require 'serialport'
-require 'eventmachine'
-require 'evma_httpserver'
-require 'em-websocket'
 require 'args_parser'
-require 'json'
+
+include SerialportServer
 
 parser = ArgsParser.parse ARGV do
-  arg :help, 'show help', :alias => :h
-  arg :bps, 'bit per second', :default => 9600
-  arg :bit, 'bit(7-9)', :default => 8
-  arg :stopbit, 'stopbit', :default => 1
-  arg :parity, 'parity bit', :default => 0
-  arg :http_port, 'HTTP port', :alias => :hp, :default => 8783
-  arg :websocket_port, 'WebSocket port', :alias => :wp, :default => 8784
-  arg :socket_port, 'TCP Socket port', :alias => :sp, :default => 8785
+  arg :help           , 'show help'       , :alias => :h
+  arg :bps            , 'bit per second'  ,                    :default => 9600
+  arg :bit            , 'bit(7-9)'        ,                    :default => 8
+  arg :stopbit        , 'stopbit'         ,                    :default => 1
+  arg :parity         , 'parity bit'      ,                    :default => 0
+  arg :http_port      , 'HTTP port'       , :alias => :hp    , :default => 8783
+  arg :websocket_port , 'WebSocket port'  , :alias => :wp    , :default => 8784
+  arg :socket_port    , 'TCP Socket port' , :alias => :sp    , :default => 8785
 end
 
 if !parser.first or parser.has_option? :help
@@ -33,7 +30,12 @@ if !parser.first or parser.has_option? :help
 end
 
 begin
-  @@sp = SerialPort.new(parser.first, parser[:bps].to_i, parser[:bit].to_i, parser[:stopbit].to_i, parser[:parity].to_i) # 9600bps, 8bit, stopbit 1, parity none
+  # Defaults to 9600bps, 8bit, stopbit 1, parity none
+  @@sp = SerialPort.new(parser.first,
+                        parser[:bps].to_i,
+                        parser[:bit].to_i,
+                        parser[:stopbit].to_i,
+                        parser[:parity].to_i)
 rescue => e
   STDERR.puts 'cannot open serialport!!'
   STDERR.puts e.to_s
@@ -47,49 +49,6 @@ end
   @@recvs.unshift({:time => now, :data => data})
   while @@recvs.size > 100 do
     @@recvs.pop
-  end
-end
-
-class SerialHttpServer  < EM::Connection
-  include EM::HttpServer
-  
-  def process_http_request
-    res = EM::DelegatedHttpResponse.new(self)
-    puts "[http] #{@http_request_method} #{@http_path_info} #{@http_query_string} #{@http_post_content}"
-    res.headers['Access-Control-Allow-Origin'] = '*'
-    res.headers['Access-Control-Allow-Headers'] = 'Content-Type'
-    res.headers['Access-Control-Allow-Methods'] = 'PUT,DELETE,POST,GET,OPTIONS'
-    if @http_request_method == 'GET'
-      res.status = 200
-      res.content = @@recvs.to_json
-      res.send_response
-    elsif @http_request_method == 'POST'
-      res.status = 200
-      @@sp.puts @http_post_content
-      res.content = @@recvs.to_json
-      res.send_response
-    end
-  end
-end
-
-class SerialSocketServer < EM::Connection
-  def post_init
-    @sid = @@channel.subscribe do |data|
-      send_data "#{data}\n"
-    end
-    puts "* new socket client <#{@sid}>"
-
-    def receive_data data
-      data = data.to_s.strip
-      return if data.size < 1
-      puts "* socket client <#{@sid}> : #{data}"
-      @@sp.puts data
-    end
-
-    def unbind
-      @@channel.unsubscribe @sid
-      puts "* socket client <#{@sid}> closed"
-    end
   end
 end
 

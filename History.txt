@@ -1,3 +1,10 @@
+=== 0.1.0 2013-08-27
+
+* use Bundler gem template instead of Hoe
+  * thank you for contributing @Sparkboxx
+* support Ruby2.0
+* add --version option
+
 === 0.0.3 2012-05-23
 
 * Args alias. websocket_port => wp, http_port => hp, socket_port => sp

@@ -1,5 +1,5 @@
 module SerialportServer
-  class SerialHttpServer < EM::Connection
+  class HttpServer < EM::Connection
     include EM::HttpServer
 
     def process_http_request
@@ -10,12 +10,12 @@ module SerialportServer
       res.headers['Access-Control-Allow-Methods'] = 'PUT,DELETE,POST,GET,OPTIONS'
       if @http_request_method == 'GET'
         res.status = 200
-        res.content = @@recvs.to_json
+        res.content = SerialportServer.application.recvs.to_json
         res.send_response
       elsif @http_request_method == 'POST'
         res.status = 200
-        @@sp.puts @http_post_content
-        res.content = @@recvs.to_json
+        SerialportServer.application.serialport.puts @http_post_content
+        res.content = SerialportServer.application.recvs.to_json
         res.send_response
       end
     end

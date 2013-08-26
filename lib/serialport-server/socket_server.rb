@@ -1,7 +1,7 @@
 module SerialportServer
-  class SerialSocketServer < EM::Connection
+  class SocketServer < EM::Connection
     def post_init
-      @sid = @@channel.subscribe do |data|
+      @sid = SerialportServer.application.channel.subscribe do |data|
         send_data "#{data}\n"
       end
       puts "* new socket client <#{@sid}>"
@@ -10,11 +10,11 @@ module SerialportServer
         data = data.to_s.strip
         return if data.size < 1
         puts "* socket client <#{@sid}> : #{data}"
-        @@sp.puts data
+        SerialportServer.application.serialport.puts data
       end
 
       def unbind
-        @@channel.unsubscribe @sid
+        SerialportServer.application.channel.unsubscribe @sid
         puts "* socket client <#{@sid}> closed"
       end
     end

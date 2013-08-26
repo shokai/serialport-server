@@ -1,14 +1,16 @@
-require File.expand_path('../lib/serialport-server', __FILE__)
+lib = File.expand_path('../lib', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+require 'serialport-server/version'
 
 Gem::Specification.new do |spec|
-  spec.name = 'serialport-server'
-  spec.version = SerialportServer::VERSION
-  spec.authors = 'Sho Hashimoto'
-  spec.email = ['hashimoto@shokai.org']
-  spec.summary  = "SerialPort Server makes your Device (Arduino, mbed...) WebServer."
-  spec.description = spec.summary
-  spec.homepage = "http://shokai.github.com/serialport-server"
-  spec.license = "MIT"
+  spec.name          = 'serialport-server'
+  spec.version       = SerialportServer::VERSION
+  spec.authors       = 'Sho Hashimoto'
+  spec.email         = ['hashimoto@shokai.org']
+  spec.summary       = "SerialPort Server makes your Device (Arduino, mbed...) WebServer."
+  spec.description   = spec.summary
+  spec.homepage      = "http://shokai.github.io/serialport-server"
+  spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
   spec.executables   = spec.files.grep(%r{^bin/}) { |f| File.basename(f) }

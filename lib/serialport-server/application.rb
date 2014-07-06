@@ -113,7 +113,7 @@ module SerialportServer
 
         EM::defer do
           loop do
-            line = STDIN.gets.gsub(/[\r\n]/,'')
+            line = STDIN.gets.gsub(/[\r\n]/,'') rescue next
             next if !line or line.to_s.empty?
             @serialport.puts line rescue next
           end

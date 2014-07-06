@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    serialport-server (0.1.0)
+    serialport-server (0.1.1)
       args_parser (~> 0.2)
       em-websocket
       eventmachine
@@ -13,15 +13,15 @@ GEM
   remote: https://rubygems.org/
   specs:
     args_parser (0.2.0)
-    em-websocket (0.5.0)
+    em-websocket (0.5.1)
       eventmachine (>= 0.12.9)
-      http_parser.rb (~> 0.5.3)
+      http_parser.rb (~> 0.6.0)
     eventmachine (1.0.3)
     eventmachine_httpserver (0.2.1)
-    http_parser.rb (0.5.3)
-    json (1.8.0)
+    http_parser.rb (0.6.0)
+    json (1.8.1)
     rake (10.1.0)
-    serialport (1.1.0)
+    serialport (1.3.0)
 
 PLATFORMS
   ruby
